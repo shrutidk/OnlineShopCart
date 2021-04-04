@@ -5,7 +5,8 @@ from django.contrib.auth import authenticate
 from django.http import Http404
 
 from rest_framework import exceptions
-from rest_framework.permissions import BasePermission
+from rest_framework.decorators import api_view
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 from Product.models import Orders
@@ -13,10 +14,17 @@ from Product.models import Orders
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 
 
-class CanOrder(BasePermission):
-    def has_permission(self, request, view):
+class CanOrder(IsAuthenticated):
 
-        if not request.user.isbusiness :
+    def has_permission(self, request, view):
+        token=Token.objects.get(key=request.auth)
+        request.user=token.user
+        print(request.user)
+
+        user_type=request.user.isbusiness
+        print(user_type)
+        #if not request.user.isbusiness:
+        if not user_type:
             return True
             #return bool(request.user and request.user.is_authenticated)
 
@@ -152,10 +160,14 @@ class IsAuthenticated(BasePermission):
             "password": request.data.get("password", ""),
         }
         #token=request.user.token
+
+        print(request.user)
         print(credentials)
         user = authenticate(**credentials)
-        token = Token.objects.get(user=user).key
+
+        #token = Token.objects.get(user=user).key
         if user:
+            print('authenticated user')
             return request.user
         #return bool(request.user and request.user.is_authenticated)
 

@@ -20,6 +20,9 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['isbusiness']
     USERNAME_FIELD = 'username'
 
+    class Meta:
+        ordering=['id']
+
     objects = CustomUserManager()
 
 

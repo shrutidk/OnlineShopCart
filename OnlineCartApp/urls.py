@@ -23,8 +23,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('products/',views.ProductList.as_view()),
     path('products/<int:pk>/', views.ProdDetails.as_view()),
-    #path('users/', views.UserList.as_view()),
-    #path('users/<int:pk>/', views.UserDetail.as_view()),
+    path('cart/',views.CartList.as_view()),
+    path('cartitem/',views.CartItemList.as_view()),
+    path('cartitem/<int:pk>/', views.CartItemDetails.as_view()),
+
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

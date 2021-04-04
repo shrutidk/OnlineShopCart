@@ -92,11 +92,10 @@ WSGI_APPLICATION = 'OnlineCart.wsgi.application'
 #     }
 # }
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shoponline',
+        'NAME': 'newonlineshop_v1',
         'USER':'shruti',
         'PASSWORD':'Test@123',
         'HOST':'127.0.0.1',

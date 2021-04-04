@@ -7,8 +7,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
 
-    path('addtocart/',views.OrderList.as_view()),
-    path('addtocart/<int:pk>/', views.OrderDetails.as_view()),
+    path('order/',views.OrderList.as_view()),
+    path('order/<int:pk>/', views.OrderDetails.as_view()),
 
 ]
 
