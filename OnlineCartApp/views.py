@@ -1,4 +1,7 @@
+from django.shortcuts import get_object_or_404
+
 from Users.models import User
+
 from .models import Products, Cart, CartItem, ProductsMeta
 from OnlineCartApp.serializers import ProductSerializer, CartSerializer, CartItemSerializer, ProductMetaSerializer
 
@@ -21,7 +24,7 @@ class ProductList(generics.ListCreateAPIView):
         user = User.objects.get(id=userid)
 
         if user.isbusiness:
-            queryset = self.queryset.filter(productowner=user)
+            queryset = self.queryset.filter(owner=user)
         else:
             queryset = Products.objects.all()
 
@@ -44,9 +47,12 @@ class ProdDetails(generics.RetrieveUpdateDestroyAPIView):
 
         userid = self.request.user.id
         user = User.objects.get(id=userid)
+        if user.isbusiness:
+            get_object_or_404(Products, id=self.kwargs['pk'], owner=self.request.user)
 
         if user.isbusiness:
-            prod = self.queryset.filter(productowner=user, id=self.kwargs['pk']).first()
+            prod = self.queryset.filter(owner=user, id=self.kwargs['pk']).first()
+
         else:
             prod = Products.objects.filter(id=self.kwargs['pk']).first()
 
@@ -77,7 +83,7 @@ class CartItemList(generics.ListCreateAPIView):
 
         userid = self.request.user.id
         user = User.objects.get(id=userid)
-        cartobj, created = Cart.objects.get_or_create(cartuser=user)
+        cartobj, created = Cart.objects.get_or_create(user=user)
         queryset = self.queryset.filter(cart=cartobj)
 
         return queryset

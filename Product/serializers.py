@@ -7,20 +7,20 @@ from OnlineCartApp.models import Products, CartItem, Cart
 
 class OrderSerializer(serializers.ModelSerializer):
 
-    products= serializers.SerializerMethodField()
+    products = serializers.SerializerMethodField()
 
     def get_products(self, obj):
 
         order_obj = OrderItem.objects.filter(order=obj)
         products = [item.product for item in list(order_obj)]
-        orderprod = ProductMetaSerializer(products,many=True).data
+        orderprod = ProductMetaSerializer(products, many=True).data
 
         return orderprod
 
     class Meta:
 
         model = Orders
-        fields = ['id','subtotal','tax','total','products']
+        fields = ['id', 'subtotal', 'tax', 'total', 'products']
 
     def create(self, validated_data):
         """
@@ -29,7 +29,7 @@ class OrderSerializer(serializers.ModelSerializer):
         user_id = self.context['request'].user.id
         user = User.objects.get(id=user_id)
 
-        cartobj = Cart.objects.get(cartuser=user_id)
+        cartobj = Cart.objects.get(user=user_id)
 
         cartitemobj = CartItem.objects.all().filter(cart=cartobj)
 
@@ -50,7 +50,7 @@ class OrderSerializer(serializers.ModelSerializer):
         tax = subtotal*(8/100)
         total = subtotal+tax
 
-        order_data = {'subtotal': subtotal, 'tax': tax, 'total': total, 'orderuser':user}
+        order_data = {'subtotal': subtotal, 'tax': tax, 'total': total, 'user': user}
         orderserializer = OrderSerializer(data=order_data)
 
         orderobj = Orders.objects.create(**order_data)
@@ -70,8 +70,7 @@ class OrderSerializer(serializers.ModelSerializer):
             orderitemdata = {'quantity': qnt, 'price': price, 'order': orderobj, 'product': prodmetaobj}
             OrderItem.objects.create(**orderitemdata)
 
-
-        #deduct order quantity from products
+        '#deduct order quantity from products'
 
         for cartitem in cartitemobj.iterator():
             prod_id = cartitem.product.id
@@ -79,7 +78,7 @@ class OrderSerializer(serializers.ModelSerializer):
             prodobj.quantity = prodobj.quantity - cartitem.quantity
             prodobj.save()
 
-       #make cart empty
+        '#make cart empty'
         cartitemobj.delete()
 
         return orderobj

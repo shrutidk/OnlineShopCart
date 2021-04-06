@@ -11,11 +11,11 @@ class OrderList(generics.ListCreateAPIView):
 
     queryset = Orders.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [CanOrder,]
+    permission_classes = [CanOrder, ]
 
     def get_queryset(self):
         userid = self.request.user.id
-        queryset = self.queryset.filter(orderuser=userid)
+        queryset = self.queryset.filter(user=userid)
 
         return queryset
 

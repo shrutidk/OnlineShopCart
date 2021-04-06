@@ -31,17 +31,12 @@ class CustomerLoginList(generics.ListCreateAPIView):
             "password": request.data.get("password", ""),
         }
 
-        print(credentials)
         user = authenticate(**credentials)
-
-        #token = Token.objects.get(user=user).key
-
-        print(user)
 
         if user is not None:
             login(request, user)
             token = Token.objects.get(user=user).key
-            return Response({"token":token},status=status.HTTP_200_OK)
+            return Response({"token": token}, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 

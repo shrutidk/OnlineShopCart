@@ -29,8 +29,8 @@ class ProductSerializer(serializers.ModelSerializer):
         user_id = self.context['request'].user.id
         user = User.objects.get(id=user_id)
 
-        prodobj = Products.objects.create(productowner=user, **validated_data)
-        return prodobj
+        product = Products.objects.create(owner=user, **validated_data)
+        return product
 
     def update(self, instance, validated_data):
         """
@@ -38,7 +38,7 @@ class ProductSerializer(serializers.ModelSerializer):
         """
         instance.title = validated_data.get('name', instance.name)
         instance.price = validated_data.get('price', instance.price)
-        instance.quantity = validated_data.get('quantity', instance.availquantity)
+        instance.quantity = validated_data.get('quantity', instance.quantity)
 
         instance.save()
         return instance
@@ -69,7 +69,7 @@ class CartSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Cart
-        fields = ['id', 'cartuser', 'createddate']
+        fields = ['id', 'user', 'date']
 
     def create(self, validated_data):
         """
@@ -81,8 +81,8 @@ class CartSerializer(serializers.ModelSerializer):
         """
         Update and return an existing `Product` instance, given the validated data.
         """
-        instance.cartuser = validated_data.get('cartuser', instance.cartuser)
-        instance.createddate = validated_data.get('createddate', instance.createddate)
+        instance.user = validated_data.get('user', instance.user)
+        instance.date = validated_data.get('date', instance.date)
 
         instance.save()
         return instance
@@ -122,7 +122,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
         user_id = self.context['request'].user.id
         user = User.objects.get(id=user_id)
-        cartobj, created = Cart.objects.get_or_create(cartuser=user)
+        cartobj, created = Cart.objects.get_or_create(user=user)
 
         prod_id = validated_data['product']
         qnt = validated_data['quantity']
@@ -130,21 +130,9 @@ class CartItemSerializer(serializers.ModelSerializer):
         if qnt > prod_id.quantity:
             raise serializers.ValidationError({"errors": "Selected quantity not available"})
 
-        #added
-        # name = prod_id.name
-        # price = prod_id.price
-        # qnt = prod_id.availquantity
-        #
-        # prodmetadata={'name':name,'price': price,'availquantity' : qnt}
-        #
-        # prodmetaser = ProductMetaSerializer(data = prodmetadata)
-        #
-        # if prodmetaser.is_valid():
-        #     prodmetaobj = prodmetaser.save()
-
         cartitems = CartItem.objects.create(cart=cartobj, **validated_data)
 
-        # print(CartItemSerializer(instance=cartitems).data)
+        '# print(CartItemSerializer(instance=cartitems).data)'
 
         return cartitems
 

@@ -1,5 +1,4 @@
 from datetime import datetime
-
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -13,7 +12,7 @@ class Products(models.Model):
     quantity = models.IntegerField()
 
     User = get_user_model()
-    productowner = models.ForeignKey(User,null=True,on_delete=models.CASCADE)
+    owner = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['id']
@@ -38,8 +37,8 @@ class ProductsMeta(models.Model):
 class Cart(models.Model):
 
     User = get_user_model()
-    cartuser = models.ForeignKey(User,null=True,on_delete=models.CASCADE)
-    createddate = models.DateTimeField(default=datetime.now())
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=datetime.now())
 
     def __str__(self):
         return str(self.id)
@@ -47,8 +46,8 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
 
-    quantity = models.IntegerField(default=1,blank=True,null=True)
-    cart = models.ForeignKey(Cart,null=True, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1, blank=True, null=True)
+    cart = models.ForeignKey(Cart, null=True, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, null=True, on_delete=models.CASCADE)
 
     def __str__(self):

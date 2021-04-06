@@ -96,10 +96,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'newonlineshop_v1',
-        'USER':'shruti',
-        'PASSWORD':'Test@123',
-        'HOST':'127.0.0.1',
-        'PORT':'5432',
+        'USER': 'shruti',
+        'PASSWORD': 'Test@123',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -127,7 +127,7 @@ REST_FRAMEWORK = {
          "rest_framework.authentication.TokenAuthentication",
 
      ),
-     #"EXCEPTION_HANDLER": "Product.exceptions.base_exception_handler",
+
  }
 
 REST_AUTH_SERIALIZERS = {
@@ -157,7 +157,6 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 )
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 SITE_ID = 1
 

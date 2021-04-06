@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','username','password','email','isbusiness']
+        fields = ['id', 'username', 'password', 'email', 'isbusiness']
 
     def create(self, validated_data):
         """
@@ -37,7 +37,7 @@ class LoginSerializer(serializers.ModelSerializer):
         """
         Create and return a new `Product` instance, given the validated data.
         """
-        user=User(username=validated_data['username'],password=validated_data['password'])
+        user = User(username=validated_data['username'], password=validated_data['password'])
         user.set_password(validated_data['password'])
         user.save()
         return user

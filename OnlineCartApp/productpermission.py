@@ -3,14 +3,10 @@ Provides a set of pluggable permission policies.
 """
 from django.contrib.auth import authenticate
 from django.http import Http404
-
 from rest_framework import exceptions
-from rest_framework.decorators import api_view
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
-from OnlineCartApp.models import Cart
-from Product.models import Orders
 
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 
@@ -18,14 +14,16 @@ SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 class CanAddProduct(IsAuthenticated):
 
     def has_permission(self, request, view):
-        token=Token.objects.get(key=request.auth)
-        request.user=token.user
-        print(request.user)
+        if request.auth is None:
+            raise Http404
+        token = Token.objects.get(key=request.auth)
+        request.user = token.user
+        '#print(request.user)'
 
-        user_type=request.user.isbusiness
-        print(user_type)
+        user_type = request.user.isbusiness
+        '#print(user_type)'
 
-        if user_type and request.method in ['POST','PUT','DELETE','PATCH']:
+        if user_type and request.method in ['POST', 'PUT', 'DELETE', 'PATCH']:
             return True
 
         if request.method in ['GET']:
@@ -35,14 +33,14 @@ class CanAddProduct(IsAuthenticated):
 class CanAddProductObj(IsAuthenticated):
 
     def has_object_permission(self, request, view, obj):
-        token=Token.objects.get(key=request.auth)
-        request.user=token.user
-        print(request.user)
+        token = Token.objects.get(key=request.auth)
+        request.user = token.user
+        '#print(request.user)'
 
-        user_type=request.user.isbusiness
-        print(user_type)
+        user_type = request.user.isbusiness
+        '#print(user_type)'
 
-        if user_type and request.method in ['POST','PUT','DELETE','PATCH']:
+        if user_type and request.method in ['POST', 'PUT', 'DELETE', 'PATCH']:
             return True
 
         if request.method in ['GET']:
@@ -52,12 +50,14 @@ class CanAddProductObj(IsAuthenticated):
 class CanAddCart(IsAuthenticated):
 
     def has_permission(self, request, view):
-        token=Token.objects.get(key=request.auth)
-        request.user=token.user
-        user_type=request.user.isbusiness
-        print(request.user.id)
+        if request.auth is None:
+            raise Http404
+        token = Token.objects.get(key=request.auth)
+
+        request.user = token.user
+        user_type = request.user.isbusiness
+
         if not user_type:
-                #and (request.user.id == Cart.cartuser):
             return True
 
 
